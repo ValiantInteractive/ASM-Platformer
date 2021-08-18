@@ -41,18 +41,22 @@ main PROC
 		moveUp:
 		dec yPos
 		call DrawPlayer
+		jmp gameLoop
 
 		moveDown:
 		inc yPos
 		call DrawPlayer
+		jmp gameLoop
 
 		moveLeft:
 		dec xPos
 		call DrawPlayer
+		jmp gameLoop
 
 		moveRight:
 		inc xPos
 		call DrawPlayer
+		jmp gameLoop
 
 	jmp gameLoop
 

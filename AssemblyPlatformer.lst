@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.29.30133.0	    08/18/21 23:23:06
+Microsoft (R) Macro Assembler Version 14.29.30133.0	    08/18/21 23:39:33
 Main.asm						     Page 1 - 1
 
 
@@ -61,7 +61,7 @@ Main.asm						     Page 1 - 1
  00000009  BA 00000000 R		mov edx, OFFSET ground
  0000000E  E8 00000000 E		call WriteString
 
- 00000013  E8 0000006C			call DrawPlayer
+ 00000013  E8 00000074			call DrawPlayer
 
  00000018				gameLoop:
 					; Get key input
@@ -70,7 +70,7 @@ Main.asm						     Page 1 - 1
 					; Quit game if user inputs "q"
  00000022  80 3D 0000007B R			cmp inputChar, "q"
 	   71
- 00000029  74 52				je exitGame
+ 00000029  74 5A				je exitGame
 
  0000002B  80 3D 0000007B R			cmp inputChar, "w"
 	   77
@@ -78,51 +78,55 @@ Main.asm						     Page 1 - 1
 
  00000034  80 3D 0000007B R			cmp inputChar, "s"
 	   73
- 0000003B  74 1D				je moveDown
+ 0000003B  74 1F				je moveDown
 
  0000003D  80 3D 0000007B R			cmp inputChar, "a"
 	   61
- 00000044  74 1F				je moveLeft
+ 00000044  74 23				je moveLeft
 
  00000046  80 3D 0000007B R			cmp inputChar, "d"
 	   64
- 0000004D  74 21				je moveRight
+ 0000004D  74 27				je moveRight
 
  0000004F					moveUp:
  0000004F  FE 0D 0000007A R			dec yPos
- 00000055  E8 0000002A				call DrawPlayer
+ 00000055  E8 00000032				call DrawPlayer
+ 0000005A  EB BC				jmp gameLoop
 
- 0000005A					moveDown:
- 0000005A  FE 05 0000007A R			inc yPos
- 00000060  E8 0000001F				call DrawPlayer
+ 0000005C					moveDown:
+ 0000005C  FE 05 0000007A R			inc yPos
+ 00000062  E8 00000025				call DrawPlayer
+ 00000067  EB AF				jmp gameLoop
 
- 00000065					moveLeft:
- 00000065  FE 0D 00000079 R			dec xPos
- 0000006B  E8 00000014				call DrawPlayer
+ 00000069					moveLeft:
+ 00000069  FE 0D 00000079 R			dec xPos
+ 0000006F  E8 00000018				call DrawPlayer
+ 00000074  EB A2				jmp gameLoop
 
- 00000070					moveRight:
- 00000070  FE 05 00000079 R			inc xPos
- 00000076  E8 00000009				call DrawPlayer
+ 00000076					moveRight:
+ 00000076  FE 05 00000079 R			inc xPos
+ 0000007C  E8 0000000B				call DrawPlayer
+ 00000081  EB 95				jmp gameLoop
 
- 0000007B  EB 9B			jmp gameLoop
+ 00000083  EB 93			jmp gameLoop
 
- 0000007D				exitGame:
+ 00000085				exitGame:
 					exit
- 0000007D  6A 00	   *	    push   +000000000h
- 0000007F  E8 00000000 E   *	    call   ExitProcess
- 00000084			main ENDP
+ 00000085  6A 00	   *	    push   +000000000h
+ 00000087  E8 00000000 E   *	    call   ExitProcess
+ 0000008C			main ENDP
 
- 00000084			DrawPlayer PROC		; Draw player
- 00000084  8A 15 00000079 R		mov dl, xPos
- 0000008A  8A 35 0000007A R		mov dh, yPos
- 00000090  E8 00000000 E		call Gotoxy
- 00000095  B0 58			mov al, "X"
- 00000097  E8 00000000 E		call WriteChar
- 0000009C  C3				ret
- 0000009D			DrawPlayer ENDP
+ 0000008C			DrawPlayer PROC		; Draw player
+ 0000008C  8A 15 00000079 R		mov dl, xPos
+ 00000092  8A 35 0000007A R		mov dh, yPos
+ 00000098  E8 00000000 E		call Gotoxy
+ 0000009D  B0 58			mov al, "X"
+ 0000009F  E8 00000000 E		call WriteChar
+ 000000A4  C3				ret
+ 000000A5			DrawPlayer ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30133.0	    08/18/21 23:23:06
+Microsoft (R) Macro Assembler Version 14.29.30133.0	    08/18/21 23:39:33
 Main.asm						     Symbols 2 - 1
 
 
@@ -217,7 +221,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 0000007C Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000009D Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000A5 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -231,7 +235,7 @@ CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-DrawPlayer . . . . . . . . . . .	P Near	 00000084 _TEXT	Length= 00000019 Public STDCALL
+DrawPlayer . . . . . . . . . . .	P Near	 0000008C _TEXT	Length= 00000019 Public STDCALL
 DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -325,13 +329,13 @@ WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000084 Public STDCALL
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000008C Public STDCALL
   gameLoop . . . . . . . . . . .	L Near	 00000018 _TEXT	
   moveUp . . . . . . . . . . . .	L Near	 0000004F _TEXT	
-  moveDown . . . . . . . . . . .	L Near	 0000005A _TEXT	
-  moveLeft . . . . . . . . . . .	L Near	 00000065 _TEXT	
-  moveRight  . . . . . . . . . .	L Near	 00000070 _TEXT	
-  exitGame . . . . . . . . . . .	L Near	 0000007D _TEXT	
+  moveDown . . . . . . . . . . .	L Near	 0000005C _TEXT	
+  moveLeft . . . . . . . . . . .	L Near	 00000069 _TEXT	
+  moveRight  . . . . . . . . . .	L Near	 00000076 _TEXT	
+  exitGame . . . . . . . . . . .	L Near	 00000085 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
