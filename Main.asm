@@ -9,6 +9,7 @@ inputChar BYTE ?
 
 .code
 main PROC
+	; Display msg string
 	mov dl, 0
 	mov dh, 0
 	call Gotoxy
