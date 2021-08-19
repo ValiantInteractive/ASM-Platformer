@@ -6,9 +6,11 @@ ground BYTE "###################################################################
 xPos BYTE 20
 yPos BYTE 20
 inputChar BYTE ?
+isJumping BYTE "F"
 
 .code
 main PROC
+	; Display msg string
 	mov dl, 0
 	mov dh, 0
 	call Gotoxy
@@ -89,7 +91,7 @@ DrawPlayer PROC		; Draw player
 	ret
 DrawPlayer ENDP
 
-UpdatePlayer PROC
+UpdatePlayer PROC	; Update previous X- and Y-coordinates with blank spaces
 	dec yPos
 	mov dl, xPos
 	mov dh, yPos
