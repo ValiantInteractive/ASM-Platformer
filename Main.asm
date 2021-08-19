@@ -2,11 +2,18 @@ INCLUDE Irvine32.inc
 
 .data
 msg BYTE "Use WASD keys to move. Press Q to quit", 0
+strScore BYTE "Score: ", 0
 ground BYTE "########################################################################################################################", 0
+
 xPos BYTE 20
 yPos BYTE 20
+
+xCoinPos BYTE ?
+yCoinPos BYTE ?
+
+score BYTE 0
+
 inputChar BYTE ?
-isJumping BYTE "F"
 
 .code
 main PROC
@@ -17,6 +24,8 @@ main PROC
 	mov edx, OFFSET msg
 	call WriteString
 	; Draw ground
+	mov eax, green (green * 16)
+	call SetTextColor
 	mov dl, 0
 	mov dh, 29
 	call Gotoxy
@@ -25,7 +34,41 @@ main PROC
 
 	call DrawPlayer
 
+	call RandomCoin
+	call DrawCoin
+
+	call Randomize
+
 	gameLoop:
+		mov eax, white (black * 16)
+		call SetTextColor
+	; Draw score
+		mov dl, 0
+		mov dh, 2
+		call Gotoxy
+		mov edx, OFFSET strScore
+		call WriteString
+		mov al, score
+		add al, '0'
+		call WriteChar
+
+	; Score system:
+		mov bl, xPos
+		cmp bl, xCoinPos
+		jne notCollected
+		mov bl, yPos
+		cmp bl, yCoinPos
+		jne notCollected
+		; Player collision with the coin
+		inc score
+		call RandomCoin
+		call DrawCoin
+
+		mov eax, white (black * 16)
+		call SetTextColor
+
+		notCollected:
+
 	; Gravity logic:
 		gravity:
 		cmp yPos, 28
@@ -37,8 +80,8 @@ main PROC
 		mov eax, 80
 		call Delay
 		jmp gravity
+		
 		onGround:
-
 	; Get key input
 		call ReadChar
 		mov inputChar, al
@@ -70,7 +113,8 @@ main PROC
 		jmp gameLoop
 
 		moveDown:
-		cmp yPos, 28
+		mov bl, yPos
+		cmp bl, 29
 		dec yPos
 		call UpdatePlayer
 		inc yPos
@@ -96,12 +140,16 @@ main PROC
 main ENDP
 
 DrawPlayer PROC		; Draw player
+	mov eax, yellow (black * 16)
+	call SetTextColor
 	dec yPos
 	mov dl, xPos
 	mov dh, yPos
 	call Gotoxy
 	mov al, ","
 	call WriteChar
+	mov eax, blue (black * 16)
+	call SetTextColor
 	inc yPos
 	mov dl, xPos
 	mov dh, yPos
@@ -126,5 +174,25 @@ UpdatePlayer PROC	; Update previous X- and Y-coordinates with blank spaces
 	call WriteChar
 	ret
 UpdatePlayer ENDP
+
+DrawCoin PROC
+	mov eax, black (yellow * 16)
+	call SetTextColor
+	mov dl, xCoinPos
+	mov dh, yCoinPos
+	call Gotoxy
+	mov al, "$"
+	call WriteChar
+	ret
+DrawCoin ENDP
+
+RandomCoin PROC
+	mov eax, 90
+	inc eax
+	call RandomRange
+	mov xCoinPos, al
+	mov yCoinPos, 23
+	ret
+RandomCoin ENDP
 
 END main
