@@ -82,6 +82,16 @@ main PROC
 		jmp gravity
 		
 		onGround:
+
+	; Wall collision logic:
+		rightWall:
+		cmp xPos, 118
+		jge moveLeft
+
+		leftWall:
+		cmp xPos, 0
+		jle moveRight
+
 	; Get key input
 		call ReadChar
 		mov inputChar, al
@@ -114,7 +124,7 @@ main PROC
 
 		moveDown:
 		mov bl, yPos
-		cmp bl, 29
+		cmp bl, 32
 		dec yPos
 		call UpdatePlayer
 		inc yPos
