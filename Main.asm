@@ -1,7 +1,7 @@
 INCLUDE Irvine32.inc
 
 .data
-
+msg BYTE "Use WASD keys to move. Press Q to quit", 0
 ground BYTE "########################################################################################################################", 0
 xPos BYTE 20
 yPos BYTE 20
@@ -9,6 +9,11 @@ inputChar BYTE ?
 
 .code
 main PROC
+	mov dl, 0
+	mov dh, 0
+	call Gotoxy
+	mov edx, OFFSET msg
+	call WriteString
 	; Draw ground
 	mov dl, 0
 	mov dh, 29
@@ -39,21 +44,25 @@ main PROC
 		je moveRight
 
 		moveUp:
+		call UpdatePlayer
 		dec yPos
 		call DrawPlayer
 		jmp gameLoop
 
 		moveDown:
+		call UpdatePlayer
 		inc yPos
 		call DrawPlayer
 		jmp gameLoop
 
 		moveLeft:
+		call UpdatePlayer
 		dec xPos
 		call DrawPlayer
 		jmp gameLoop
 
 		moveRight:
+		call UpdatePlayer
 		inc xPos
 		call DrawPlayer
 		jmp gameLoop
@@ -65,6 +74,13 @@ main PROC
 main ENDP
 
 DrawPlayer PROC		; Draw player
+	dec yPos
+	mov dl, xPos
+	mov dh, yPos
+	call Gotoxy
+	mov al, ","
+	call WriteChar
+	inc yPos
 	mov dl, xPos
 	mov dh, yPos
 	call Gotoxy
@@ -72,5 +88,21 @@ DrawPlayer PROC		; Draw player
 	call WriteChar
 	ret
 DrawPlayer ENDP
+
+UpdatePlayer PROC
+	dec yPos
+	mov dl, xPos
+	mov dh, yPos
+	call Gotoxy
+	mov al, " "
+	call WriteChar
+	inc yPos
+	mov dl, xPos
+	mov dh, yPos
+	call Gotoxy
+	mov al, " "
+	call WriteChar
+	ret
+UpdatePlayer ENDP
 
 END main
