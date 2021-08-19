@@ -26,6 +26,19 @@ main PROC
 	call DrawPlayer
 
 	gameLoop:
+	; Gravity logic:
+		gravity:
+		cmp yPos, 28
+		jge onGround
+	; Make player fall
+		call UpdatePlayer
+		inc yPos
+		call DrawPlayer
+		mov eax, 80
+		call Delay
+		jmp gravity
+		onGround:
+
 	; Get key input
 		call ReadChar
 		mov inputChar, al
@@ -45,13 +58,20 @@ main PROC
 		cmp inputChar, "d"
 		je moveRight
 
-		moveUp:
-		call UpdatePlayer
-		dec yPos
-		call DrawPlayer
+		moveUp:			; Jump logic:
+		mov ecx, 5
+		jumpLoop:
+			call UpdatePlayer
+			dec yPos
+			call DrawPlayer
+			mov eax, 10
+			call Delay
+		loop jumpLoop
 		jmp gameLoop
 
 		moveDown:
+		cmp yPos, 28
+		dec yPos
 		call UpdatePlayer
 		inc yPos
 		call DrawPlayer
