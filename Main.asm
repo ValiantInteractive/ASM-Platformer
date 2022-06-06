@@ -106,37 +106,38 @@ main PROC
 			cmp inputChar, "d"
 			je moveRight
 
-			moveUp:
-				mov ecx, 5
-			jumpLoop:
-				call UpdatePlayer
-				dec yPos
-				call DrawPlayer
-				mov eax, 10
-				call Delay
-				loop jumpLoop
-				jmp gameLoop
+		moveUp:
+			mov ecx, 5
+		jumpLoop:
+			call UpdatePlayer
+			dec yPos
+			call DrawPlayer
+			mov eax, 10
+			call Delay
+			loop jumpLoop
+			jmp gameLoop
 
-			moveDown:
-				mov bl, yPos
-				cmp bl, 32
-				dec yPos
-				call UpdatePlayer
-				inc yPos
-				call DrawPlayer
-				jmp gameLoop
+		moveDown:
+			mov bl, yPos
+			cmp bl, 32
+			dec yPos
+			call UpdatePlayer
+			inc yPos
+			call DrawPlayer
+			jmp gameLoop
 
-			moveLeft:
-				call UpdatePlayer
-				dec xPos
-				call DrawPlayer
-				jmp gameLoop
+		moveLeft:
+			call UpdatePlayer
+			dec xPos
+			call DrawPlayer
+			jmp gameLoop
 
-			moveRight:
-				call UpdatePlayer
-				inc xPos
-				call DrawPlayer
-				jmp gameLoop
+		moveRight:
+			call UpdatePlayer
+			inc xPos
+			call DrawPlayer
+			jmp gameLoop
+
 	exitGame:
 		exit
 main ENDP
