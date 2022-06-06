@@ -3,17 +3,14 @@ INCLUDE Irvine32.inc
 .data
 msg BYTE "Use WASD keys to move. Press Q to quit", 0
 strScore BYTE "Score: ", 0
+strTime BYTE "Time: ", 0
 ground BYTE "########################################################################################################################", 0
-
 xPos BYTE 20
 yPos BYTE 20
-
 xCoinPos BYTE ?
 yCoinPos BYTE ?
-
-score BYTE 0
-
 inputChar BYTE ?
+score BYTE 0
 
 .code
 main PROC
@@ -22,7 +19,9 @@ main PROC
 	mov dh, 0
 	call Gotoxy
 	mov edx, OFFSET msg
+	add score, -48
 	call WriteString
+
 	; Draw ground
 	mov eax, green (green * 16)
 	call SetTextColor
@@ -30,19 +29,17 @@ main PROC
 	mov dh, 29
 	call Gotoxy
 	mov edx, OFFSET ground
+
 	call WriteString
-
 	call DrawPlayer
-
 	call RandomCoin
 	call DrawCoin
-
 	call Randomize
 
 	gameLoop:
 		mov eax, white (black * 16)
 		call SetTextColor
-	; Draw score
+	; Draw score:
 		mov dl, 0
 		mov dh, 2
 		call Gotoxy
@@ -50,8 +47,7 @@ main PROC
 		call WriteString
 		mov al, score
 		add al, '0'
-		call WriteChar
-
+		call WriteInt
 	; Score system:
 		mov bl, xPos
 		cmp bl, xCoinPos
@@ -59,16 +55,13 @@ main PROC
 		mov bl, yPos
 		cmp bl, yCoinPos
 		jne notCollected
-		; Player collision with the coin
+	; Player collision with the coin
 		inc score
 		call RandomCoin
 		call DrawCoin
-
 		mov eax, white (black * 16)
 		call SetTextColor
-
 		notCollected:
-
 	; Gravity logic:
 		gravity:
 		cmp yPos, 28
@@ -82,8 +75,8 @@ main PROC
 		jmp gravity
 		
 		onGround:
-
 	; Wall collision logic:
+		
 		rightWall:
 		cmp xPos, 118
 		jge moveLeft
@@ -95,6 +88,7 @@ main PROC
 	; Get key input
 		call ReadChar
 		mov inputChar, al
+
 	; Quit game if user inputs "q"
 		cmp inputChar, "q"
 		je exitGame
