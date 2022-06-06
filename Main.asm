@@ -11,6 +11,7 @@ xCoinPos BYTE ?
 yCoinPos BYTE ?
 inputChar BYTE ?
 score BYTE 0
+time BYTE 127
 
 .code
 main PROC
@@ -61,29 +62,30 @@ main PROC
 		call DrawCoin
 		mov eax, white (black * 16)
 		call SetTextColor
+
 		notCollected:
-	; Gravity logic:
-		gravity:
-		cmp yPos, 28
-		jge onGround
-	; Make player fall
-		call UpdatePlayer
-		inc yPos
-		call DrawPlayer
-		mov eax, 80
-		call Delay
-		jmp gravity
+		; Gravity logic:
+			gravity:
+			cmp yPos, 28
+			jge onGround
+		; Make player fall
+			call UpdatePlayer
+			inc yPos
+			call DrawPlayer
+			mov eax, 80
+			call Delay
+			jmp gravity
 		
 		onGround:
-	; Wall collision logic:
+		; Wall collision logic:
 		
-		rightWall:
-		cmp xPos, 118
-		jge moveLeft
+			rightWall:
+				cmp xPos, 118
+				jge moveLeft
 
-		leftWall:
-		cmp xPos, 0
-		jle moveRight
+			leftWall:
+				cmp xPos, 0
+				jle moveRight
 
 	; Get key input
 		call ReadChar
@@ -106,36 +108,36 @@ main PROC
 		je moveRight
 
 		moveUp:			; Jump logic:
-		mov ecx, 5
+			mov ecx, 5
 		jumpLoop:
 			call UpdatePlayer
 			dec yPos
 			call DrawPlayer
 			mov eax, 10
 			call Delay
-		loop jumpLoop
-		jmp gameLoop
+			loop jumpLoop
+			jmp gameLoop
 
 		moveDown:
-		mov bl, yPos
-		cmp bl, 32
-		dec yPos
-		call UpdatePlayer
-		inc yPos
-		call DrawPlayer
-		jmp gameLoop
+			mov bl, yPos
+			cmp bl, 32
+			dec yPos
+			call UpdatePlayer
+			inc yPos
+			call DrawPlayer
+			jmp gameLoop
 
 		moveLeft:
-		call UpdatePlayer
-		dec xPos
-		call DrawPlayer
-		jmp gameLoop
+			call UpdatePlayer
+			dec xPos
+			call DrawPlayer
+			jmp gameLoop
 
 		moveRight:
-		call UpdatePlayer
-		inc xPos
-		call DrawPlayer
-		jmp gameLoop
+			call UpdatePlayer
+			inc xPos
+			call DrawPlayer
+			jmp gameLoop
 
 	jmp gameLoop
 
@@ -192,10 +194,11 @@ DrawCoin ENDP
 
 RandomCoin PROC
 	mov eax, 90
-	inc eax
 	call RandomRange
 	mov xCoinPos, al
 	mov yCoinPos, 23
+	cmp xCoinPos, 0
+	inc xCoinPos
 	ret
 RandomCoin ENDP
 

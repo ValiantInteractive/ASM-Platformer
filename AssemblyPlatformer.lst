@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.31.31105.0	    06/06/22 03:54:32
+Microsoft (R) Macro Assembler Version 14.31.31105.0	    06/06/22 04:31:04
 Main.asm						     Page 1 - 1
 
 
@@ -65,6 +65,7 @@ Main.asm						     Page 1 - 1
  000000B2 00			yCoinPos BYTE ?
  000000B3 00			inputChar BYTE ?
  000000B4 00			score BYTE 0
+ 000000B5 7F			time BYTE 127
 
  00000000			.code
  00000000			main PROC
@@ -116,32 +117,33 @@ Main.asm						     Page 1 - 1
  0000009B  E8 00000192				call DrawCoin
  000000A0  B8 0000000F				mov eax, white (black * 16)
  000000A5  E8 00000000 E			call SetTextColor
+
  000000AA					notCollected:
-					; Gravity logic:
- 000000AA					gravity:
- 000000AA  80 3D 000000B0 R			cmp yPos, 28
+						; Gravity logic:
+ 000000AA						gravity:
+ 000000AA  80 3D 000000B0 R				cmp yPos, 28
 	   1C
- 000000B1  7D 1C				jge onGround
-					; Make player fall
- 000000B3  E8 0000013D				call UpdatePlayer
- 000000B8  FE 05 000000B0 R			inc yPos
- 000000BE  E8 000000E1				call DrawPlayer
- 000000C3  B8 00000050				mov eax, 80
- 000000C8  E8 00000000 E			call Delay
- 000000CD  EB DB				jmp gravity
+ 000000B1  7D 1C					jge onGround
+						; Make player fall
+ 000000B3  E8 0000013D					call UpdatePlayer
+ 000000B8  FE 05 000000B0 R				inc yPos
+ 000000BE  E8 000000E1					call DrawPlayer
+ 000000C3  B8 00000050					mov eax, 80
+ 000000C8  E8 00000000 E				call Delay
+ 000000CD  EB DB					jmp gravity
 						
  000000CF					onGround:
-					; Wall collision logic:
+						; Wall collision logic:
 						
- 000000CF					rightWall:
- 000000CF  80 3D 000000AF R			cmp xPos, 118
+ 000000CF						rightWall:
+ 000000CF  80 3D 000000AF R					cmp xPos, 118
 	   76
- 000000D6  0F 8D 00000092			jge moveLeft
+ 000000D6  0F 8D 00000092					jge moveLeft
 
- 000000DC					leftWall:
- 000000DC  80 3D 000000AF R			cmp xPos, 0
+ 000000DC						leftWall:
+ 000000DC  80 3D 000000AF R					cmp xPos, 0
 	   00
- 000000E3  0F 8E 0000009A			jle moveRight
+ 000000E3  0F 8E 0000009A					jle moveRight
 
 					; Get key input
  000000E9  E8 00000000 E			call ReadChar
@@ -169,36 +171,36 @@ Main.asm						     Page 1 - 1
  00000122  74 5F				je moveRight
 
  00000124					moveUp:			; Jump logic:
- 00000124  B9 00000005				mov ecx, 5
+ 00000124  B9 00000005					mov ecx, 5
  00000129					jumpLoop:
  00000129  E8 000000C7					call UpdatePlayer
  0000012E  FE 0D 000000B0 R				dec yPos
  00000134  E8 0000006B					call DrawPlayer
  00000139  B8 0000000A					mov eax, 10
  0000013E  E8 00000000 E				call Delay
- 00000143  E2 E4				loop jumpLoop
- 00000145  E9 FFFFFF01				jmp gameLoop
+ 00000143  E2 E4					loop jumpLoop
+ 00000145  E9 FFFFFF01					jmp gameLoop
 
  0000014A					moveDown:
- 0000014A  8A 1D 000000B0 R			mov bl, yPos
- 00000150  80 FB 20				cmp bl, 32
- 00000153  FE 0D 000000B0 R			dec yPos
- 00000159  E8 00000097				call UpdatePlayer
- 0000015E  FE 05 000000B0 R			inc yPos
- 00000164  E8 0000003B				call DrawPlayer
- 00000169  E9 FFFFFEDD				jmp gameLoop
+ 0000014A  8A 1D 000000B0 R				mov bl, yPos
+ 00000150  80 FB 20					cmp bl, 32
+ 00000153  FE 0D 000000B0 R				dec yPos
+ 00000159  E8 00000097					call UpdatePlayer
+ 0000015E  FE 05 000000B0 R				inc yPos
+ 00000164  E8 0000003B					call DrawPlayer
+ 00000169  E9 FFFFFEDD					jmp gameLoop
 
  0000016E					moveLeft:
- 0000016E  E8 00000082				call UpdatePlayer
- 00000173  FE 0D 000000AF R			dec xPos
- 00000179  E8 00000026				call DrawPlayer
- 0000017E  E9 FFFFFEC8				jmp gameLoop
+ 0000016E  E8 00000082					call UpdatePlayer
+ 00000173  FE 0D 000000AF R				dec xPos
+ 00000179  E8 00000026					call DrawPlayer
+ 0000017E  E9 FFFFFEC8					jmp gameLoop
 
  00000183					moveRight:
- 00000183  E8 0000006D				call UpdatePlayer
- 00000188  FE 05 000000AF R			inc xPos
- 0000018E  E8 00000011				call DrawPlayer
- 00000193  E9 FFFFFEB3				jmp gameLoop
+ 00000183  E8 0000006D					call UpdatePlayer
+ 00000188  FE 05 000000AF R				inc xPos
+ 0000018E  E8 00000011					call DrawPlayer
+ 00000193  E9 FFFFFEB3					jmp gameLoop
 
  00000198  E9 FFFFFEAE			jmp gameLoop
 
@@ -257,16 +259,18 @@ Main.asm						     Page 1 - 1
 
  00000255			RandomCoin PROC
  00000255  B8 0000005A			mov eax, 90
- 0000025A  40				inc eax
- 0000025B  E8 00000000 E		call RandomRange
- 00000260  A2 000000B1 R		mov xCoinPos, al
- 00000265  C6 05 000000B2 R		mov yCoinPos, 23
+ 0000025A  E8 00000000 E		call RandomRange
+ 0000025F  A2 000000B1 R		mov xCoinPos, al
+ 00000264  C6 05 000000B2 R		mov yCoinPos, 23
 	   17
- 0000026C  C3				ret
- 0000026D			RandomCoin ENDP
+ 0000026B  80 3D 000000B1 R		cmp xCoinPos, 0
+	   00
+ 00000272  FE 05 000000B1 R		inc xCoinPos
+ 00000278  C3				ret
+ 00000279			RandomCoin ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.31.31105.0	    06/06/22 03:54:32
+Microsoft (R) Macro Assembler Version 14.31.31105.0	    06/06/22 04:31:04
 Main.asm						     Symbols 2 - 1
 
 
@@ -360,8 +364,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 000000B5 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000026D Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 000000B6 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000279 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -419,7 +423,7 @@ ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-RandomCoin . . . . . . . . . . .	P Near	 00000255 _TEXT	Length= 00000018 Public STDCALL
+RandomCoin . . . . . . . . . . .	P Near	 00000255 _TEXT	Length= 00000024 Public STDCALL
 RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -724,6 +728,7 @@ red  . . . . . . . . . . . . . .	Number	 00000004h
 score  . . . . . . . . . . . . .	Byte	 000000B4 _DATA	
 strScore . . . . . . . . . . . .	Byte	 00000027 _DATA	
 strTime  . . . . . . . . . . . .	Byte	 0000002F _DATA	
+time . . . . . . . . . . . . . .	Byte	 000000B5 _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 xCoinPos . . . . . . . . . . . .	Byte	 000000B1 _DATA	
