@@ -3,15 +3,13 @@ INCLUDE Irvine32.inc
 .data
 msg BYTE "Use WASD keys to move. Press Q to quit", 0
 strScore BYTE "Score: ", 0
-strTime BYTE "Time: ", 0
 ground BYTE "########################################################################################################################", 0
 xPos BYTE 20
 yPos BYTE 20
+score BYTE 0
 xCoinPos BYTE ?
 yCoinPos BYTE ?
 inputChar BYTE ?
-score BYTE 0
-time BYTE 127
 
 .code
 main PROC
@@ -56,16 +54,17 @@ main PROC
 		mov bl, yPos
 		cmp bl, yCoinPos
 		jne notCollected
-	; Player collision with the coin
+	; Player collision with the coin:
 		inc score
 		call RandomCoin
 		call DrawCoin
 		mov eax, white (black * 16)
 		call SetTextColor
+		jmp gameLoop
 
-		notCollected:
+	notCollected:
 		; Gravity logic:
-			gravity:
+		gravity:
 			cmp yPos, 28
 			jge onGround
 		; Make player fall
@@ -79,70 +78,67 @@ main PROC
 		onGround:
 		; Wall collision logic:
 		
-			rightWall:
-				cmp xPos, 118
-				jge moveLeft
+		rightWall:
+			cmp xPos, 118
+			jge moveLeft
 
-			leftWall:
-				cmp xPos, 0
-				jle moveRight
+		leftWall:
+			cmp xPos, 0
+			jle moveRight
 
-	; Get key input
-		call ReadChar
-		mov inputChar, al
+		; Get key input
+			call ReadChar
+			mov inputChar, al
 
-	; Quit game if user inputs "q"
-		cmp inputChar, "q"
-		je exitGame
+		; Quit game if user inputs "q"
+			cmp inputChar, "q"
+			je exitGame
 
-		cmp inputChar, "w"
-		je moveUp
+			cmp inputChar, "w"
+			je moveUp
 
-		cmp inputChar, "s"
-		je moveDown
+			cmp inputChar, "s"
+			je moveDown
 
-		cmp inputChar, "a"
-		je moveLeft
+			cmp inputChar, "a"
+			je moveLeft
 
-		cmp inputChar, "d"
-		je moveRight
+			cmp inputChar, "d"
+			je moveRight
 
-		moveUp:			; Jump logic:
-			mov ecx, 5
-		jumpLoop:
-			call UpdatePlayer
-			dec yPos
-			call DrawPlayer
-			mov eax, 10
-			call Delay
-			loop jumpLoop
-			jmp gameLoop
+			moveUp:
+				mov ecx, 5
+			jumpLoop:
+				call UpdatePlayer
+				dec yPos
+				call DrawPlayer
+				mov eax, 10
+				call Delay
+				loop jumpLoop
+				jmp gameLoop
 
-		moveDown:
-			mov bl, yPos
-			cmp bl, 32
-			dec yPos
-			call UpdatePlayer
-			inc yPos
-			call DrawPlayer
-			jmp gameLoop
+			moveDown:
+				mov bl, yPos
+				cmp bl, 32
+				dec yPos
+				call UpdatePlayer
+				inc yPos
+				call DrawPlayer
+				jmp gameLoop
 
-		moveLeft:
-			call UpdatePlayer
-			dec xPos
-			call DrawPlayer
-			jmp gameLoop
+			moveLeft:
+				call UpdatePlayer
+				dec xPos
+				call DrawPlayer
+				jmp gameLoop
 
-		moveRight:
-			call UpdatePlayer
-			inc xPos
-			call DrawPlayer
-			jmp gameLoop
-
-	jmp gameLoop
-
+			moveRight:
+				call UpdatePlayer
+				inc xPos
+				call DrawPlayer
+				jmp gameLoop
 	exitGame:
-	exit
+		exit
 main ENDP
 
 DrawPlayer PROC		; Draw player
